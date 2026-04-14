@@ -1,0 +1,33 @@
+{
+  "distribution": {
+    "Benign": 1591,
+    "Bot": 5
+  },
+  "latest_alerts": [
+    {
+      "time": "16:14:54",
+      "type": "Bot",
+      "target": "Port 443"
+    },
+    {
+      "time": "16:13:08",
+      "type": "Bot",
+      "target": "Port 443"
+    },
+    {
+      "time": "16:12:13",
+      "type": "Bot",
+      "target": "Port 443"
+    },
+    {
+      "time": "16:12:05",
+      "type": "Bot",
+      "target": "Port 443"
+    },
+    {
+      "time": "16:11:40",
+      "type": "Bot",
+      "target": "Port 443"
+    }
+  ]
+}

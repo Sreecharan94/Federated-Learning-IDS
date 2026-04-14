@@ -1,0 +1,95 @@
+# configs/config.yaml
+general:
+  project_name: "FL-IDS-Enterprise"
+  log_level: "INFO"
+  seed: 42
+
+data:
+  dataset_path: "./data/CICIDS2018/"
+  processed_data_dir: "./data/processed_chunks/"
+  csv_files:
+    - "Bot.csv"
+    - "Brute Force -Web.csv"
+    - "Brute Force -XSS.csv"
+    - "DDOS attack-HOIC.csv"
+    - "DDOS attack-LOIC-UDP.csv"
+    - "DDoS attacks-LOIC-HTTP.csv"
+    - "DoS attacks-GoldenEye.csv"
+    - "DoS attacks-Hulk.csv"
+    - "DoS attacks-SlowHTTPTest.csv"
+    - "DoS attacks-Slowloris.csv"
+    - "FTP-BruteForce.csv"
+    - "Infilteration.csv"
+  target_column: "Label"
+  sequence_length: 10
+  test_size: 0.15
+  validation_size: 0.15
+  chunk_size: 5000
+  num_workers: 2 # For parallel data loading
+
+kafka:
+  # Use IPv4 explicitly to avoid Windows IPv6 issues
+  bootstrap_servers: ["127.0.0.1:9092"]
+  topic_name: "network_traffic"
+  consumer_group: "fl_ids_consumer"
+  batch_size: 1000
+  max_poll_records: 100
+  api_version: [2, 5, 0]
+  # Consumer-specific settings
+  auto_offset_reset: "earliest"
+  enable_auto_commit: true
+  auto_commit_interval_ms: 5000
+
+model:
+  lstm_units: 128
+  attention_heads: 8
+  dense_units: 64
+  dropout_rate: 0.3
+  learning_rate: 0.001
+  epochs_per_round: 5
+  batch_size: 32
+  input_shape: [10, 78] # Will be updated dynamically during preprocessing
+  num_classes: 12 # Based on your 12 CSV files + BENIGN class
+
+federated:
+  num_clients: 5
+  num_rounds: 10
+  client_participation_rate: 0.8
+  aggregation_method: "fedavg"
+  local_epochs: 2
+  local_batch_size: 32
+  non_iid: true # Enable non-IID data distribution
+  class_imbalance: true # Handle class imbalance in federated setting
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false
+  workers: 1 # Keep 1 for Windows compatibility
+  timeout_keep_alive: 30
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8501
+  refresh_interval: 1
+  debug: false
+
+monitoring:
+  log_metrics: true
+  save_plots: true
+  plot_dir: "./outputs/plots/"
+  metrics_dir: "./outputs/experiment_metrics/"
+  enable_tensorboard: false
+
+# Training-specific settings
+training:
+  early_stopping_patience: 5
+  reduce_lr_patience: 3
+  reduce_lr_factor: 0.5
+  class_weighting: true # Enable class weights for imbalanced dataset
+
+# System resource limits (Windows-friendly)
+system:
+  max_memory_usage_gb: 8
+  cpu_cores: -1
+  gpu_memory_limit: 0.75
